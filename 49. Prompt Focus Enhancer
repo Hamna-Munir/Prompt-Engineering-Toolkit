@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prompt Focus Enhancer</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8e8f8;
+  padding: 40px 20px;
+  color: #2d2d5e;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.badge {
+  display: inline-block;
+  background: #7c3aed;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 34px;
+  color: #5b21b6;
+  font-weight: 800;
+}
+
+.info {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border: 1.5px solid #e0dff5;
+  border-radius: 16px;
+  padding: 22px;
+  max-width: 900px;
+  margin: 0 auto 18px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7c3aed;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* INPUT */
+textarea, select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1.5px solid #ddd8f5;
+  background: #fafafa;
+  font-family: monospace;
+}
+
+/* BUTTON */
+.btn {
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primary {
+  background: #5b21b6;
+  color: white;
+}
+
+.secondary {
+  background: transparent;
+  border: 1.5px solid #c4b5fd;
+  color: #5b21b6;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* OUTPUT */
+.output {
+  background: #fff;
+  border: 1.5px solid #e0dff5;
+  border-radius: 16px;
+  padding: 18px;
+  min-height: 260px;
+  white-space: pre-wrap;
+}
+
+.block {
+  background: #f5f3ff;
+  border-left: 4px solid #7c3aed;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.title {
+  background: #ede9fe;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.score {
+  font-size: 18px;
+  font-weight: 800;
+  color: #5b21b6;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge">🎯 Focus Enhancer</div>
+  <h1>Prompt Focus Enhancer</h1>
+
+  <div class="info">
+    👩‍🎓 Student: <b>Hamna Munir</b> | 👨‍🏫 Teacher: <b>Sir Nadeem</b>
+  </div>
+</div>
+
+<!-- INPUT -->
+<div class="card">
+  <div class="section-label">Enter Prompt</div>
+  <textarea id="input" rows="4" placeholder="e.g. write something about AI and tech"></textarea>
+</div>
+
+<div class="card">
+  <div class="section-label">Focus Mode</div>
+  <select id="mode">
+    <option>General Focus</option>
+    <option>Strict Focus</option>
+    <option>Ultra Focus</option>
+  </select>
+</div>
+
+<!-- BUTTON -->
+<div class="card">
+  <button class="btn primary" onclick="enhance()">Enhance Focus</button>
+  <button class="btn secondary" onclick="clearAll()">Clear</button>
+</div>
+
+<!-- OUTPUT -->
+<div class="card grid">
+  <div>
+    <div class="section-label">Before (Unfocused Prompt)</div>
+    <div class="output" id="before">Original prompt...</div>
+  </div>
+
+  <div>
+    <div class="section-label">After (Focused Prompt)</div>
+    <div class="output" id="after">Focused prompt...</div>
+  </div>
+</div>
+
+<!-- SCORE -->
+<div class="card">
+  <div class="section-label">Focus Score</div>
+  <div class="score" id="score">0%</div>
+</div>
+
+<script>
+
+function enhance() {
+  const input = document.getElementById("input").value;
+  const mode = document.getElementById("mode").value;
+
+  if (!input) return alert("Enter a prompt!");
+
+  document.getElementById("before").innerText = input;
+
+  const focused = buildFocus(input, mode);
+
+  document.getElementById("after").innerText = focused;
+
+  const score = calcScore(input, mode);
+  document.getElementById("score").innerText = score + "%";
+}
+
+function buildFocus(text, mode) {
+
+  let cleaned = text
+    .replace(/\b(something|things|stuff|nice|good|very)\b/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  let result = "";
+
+  if (mode === "General Focus") {
+    result = `
+ROLE: AI Assistant
+
+FOCUSED TASK: ${cleaned}
+
+INSTRUCTION: Provide a clear and relevant response only.
+`;
+  }
+
+  if (mode === "Strict Focus") {
+    result = `
+ROLE: Precision AI Assistant
+
+FOCUSED TASK: ${cleaned}
+
+RULES:
+- No unnecessary explanation
+- Stay on topic only
+- Be concise and accurate
+
+OUTPUT FORMAT:
+Direct structured answer only.
+`;
+  }
+
+  if (mode === "Ultra Focus") {
+    result = `
+ROLE: High-Precision Expert AI
+
+FOCUSED TASK: ${cleaned}
+
+STRICT RULES:
+- No fluff or repetition
+- No unrelated information
+- Maximum clarity and precision
+
+OUTPUT FORMAT:
+1. Direct Answer
+2. Key Points Only
+3. Final Summary
+
+GOAL: Maximum focus and zero noise output.
+`;
+  }
+
+  return result;
+}
+
+function calcScore(text, mode) {
+  let score = text.length;
+
+  if (mode === "General Focus") score += 20;
+  if (mode === "Strict Focus") score += 50;
+  if (mode === "Ultra Focus") score += 80;
+
+  return Math.min(score, 100);
+}
+
+function clearAll() {
+  document.getElementById("input").value = "";
+  document.getElementById("before").innerText = "";
+  document.getElementById("after").innerText = "";
+  document.getElementById("score").innerText = "0%";
+}
+
+</script>
+
+</body>
+</html>

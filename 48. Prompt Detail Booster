@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prompt Detail Booster</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8e8f8;
+  padding: 40px 20px;
+  color: #2d2d5e;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.badge {
+  display: inline-block;
+  background: #7c3aed;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 34px;
+  color: #5b21b6;
+  font-weight: 800;
+}
+
+.info {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border: 1.5px solid #e0dff5;
+  border-radius: 16px;
+  padding: 22px;
+  max-width: 900px;
+  margin: 0 auto 18px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7c3aed;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* INPUT */
+textarea, select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1.5px solid #ddd8f5;
+  background: #fafafa;
+  font-family: monospace;
+}
+
+/* BUTTON */
+.btn {
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primary {
+  background: #5b21b6;
+  color: white;
+}
+
+.secondary {
+  background: transparent;
+  border: 1.5px solid #c4b5fd;
+  color: #5b21b6;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* OUTPUT */
+.output {
+  background: #fff;
+  border: 1.5px solid #e0dff5;
+  border-radius: 16px;
+  padding: 18px;
+  min-height: 260px;
+  white-space: pre-wrap;
+}
+
+.block {
+  background: #f5f3ff;
+  border-left: 4px solid #7c3aed;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.title {
+  background: #ede9fe;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.score {
+  font-size: 18px;
+  font-weight: 800;
+  color: #5b21b6;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge">🚀 Detail Booster</div>
+  <h1>Prompt Detail Booster</h1>
+
+  <div class="info">
+    👩‍🎓 Student: <b>Hamna Munir</b> | 👨‍🏫 Teacher: <b>Sir Nadeem</b>
+  </div>
+</div>
+
+<!-- INPUT -->
+<div class="card">
+  <div class="section-label">Enter Short Prompt</div>
+  <textarea id="input" rows="4" placeholder="e.g. write about AI"></textarea>
+</div>
+
+<div class="card">
+  <div class="section-label">Detail Level</div>
+  <select id="level">
+    <option>Medium</option>
+    <option>High</option>
+    <option>Ultra</option>
+  </select>
+</div>
+
+<!-- BUTTON -->
+<div class="card">
+  <button class="btn primary" onclick="boost()">Boost Prompt</button>
+  <button class="btn secondary" onclick="clearAll()">Clear</button>
+</div>
+
+<!-- OUTPUT -->
+<div class="card grid">
+  <div>
+    <div class="section-label">Before</div>
+    <div class="output" id="before">Original prompt...</div>
+  </div>
+
+  <div>
+    <div class="section-label">After (Detailed Prompt)</div>
+    <div class="output" id="after">Expanded prompt...</div>
+  </div>
+</div>
+
+<!-- SCORE -->
+<div class="card">
+  <div class="section-label">Detail Enhancement Score</div>
+  <div class="score" id="score">0%</div>
+</div>
+
+<script>
+
+function boost() {
+  const input = document.getElementById("input").value;
+  const level = document.getElementById("level").value;
+
+  if (!input) return alert("Enter a prompt!");
+
+  document.getElementById("before").innerText = input;
+
+  const expanded = expandPrompt(input, level);
+
+  document.getElementById("after").innerText = expanded;
+
+  const score = calcScore(input, level);
+  document.getElementById("score").innerText = score + "%";
+}
+
+function expandPrompt(text, level) {
+
+  let extra = "";
+
+  if (level === "Medium") {
+    extra = `
+ROLE: AI Assistant
+
+TASK: ${text}
+
+CONTEXT: Provide a clear explanation.
+
+OUTPUT: Simple structured response.
+`;
+  }
+
+  if (level === "High") {
+    extra = `
+ROLE: Expert AI Assistant
+
+TASK: ${text}
+
+CONTEXT:
+- Explain step by step
+- Add examples
+- Provide clarity for beginners
+
+OUTPUT FORMAT:
+Introduction → Explanation → Example → Summary
+`;
+  }
+
+  if (level === "Ultra") {
+    extra = `
+ROLE: Senior AI Domain Expert
+
+TASK: ${text}
+
+CONTEXT:
+- Deep detailed explanation
+- Real-world applications
+- Edge cases
+- Common mistakes
+- Professional insights
+
+OUTPUT FORMAT:
+1. Introduction
+2. Detailed Explanation
+3. Practical Examples
+4. Use Cases
+5. Mistakes to Avoid
+6. Summary
+
+ADDITIONAL REQUIREMENT:
+Provide expert-level clarity with structured formatting.
+`;
+  }
+
+  return extra;
+}
+
+function calcScore(text, level) {
+  let base = text.length;
+
+  if (level === "Medium") base += 20;
+  if (level === "High") base += 40;
+  if (level === "Ultra") base += 70;
+
+  return Math.min(base, 100);
+}
+
+function clearAll() {
+  document.getElementById("input").value = "";
+  document.getElementById("before").innerText = "";
+  document.getElementById("after").innerText = "";
+  document.getElementById("score").innerText = "0%";
+}
+
+</script>
+
+</body>
+</html>

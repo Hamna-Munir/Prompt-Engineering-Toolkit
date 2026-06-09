@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prompt Cleaner</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8e8f8;
+  padding: 40px 20px;
+  color: #2d2d5e;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.badge {
+  display: inline-block;
+  background: #7c3aed;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 34px;
+  color: #5b21b6;
+  font-weight: 800;
+}
+
+.info {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border: 1.5px solid #e0dff5;
+  border-radius: 16px;
+  padding: 22px;
+  max-width: 900px;
+  margin: 0 auto 18px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7c3aed;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* INPUT */
+textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1.5px solid #ddd8f5;
+  background: #fafafa;
+  font-family: monospace;
+}
+
+/* BUTTON */
+.btn {
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primary {
+  background: #5b21b6;
+  color: white;
+}
+
+.secondary {
+  background: transparent;
+  border: 1.5px solid #c4b5fd;
+  color: #5b21b6;
+}
+
+/* OUTPUT */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.output {
+  background: #fff;
+  border: 1.5px solid #e0dff5;
+  border-radius: 16px;
+  padding: 18px;
+  min-height: 240px;
+  white-space: pre-wrap;
+}
+
+.block {
+  background: #f5f3ff;
+  border-left: 4px solid #7c3aed;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.title {
+  background: #ede9fe;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.score {
+  font-size: 18px;
+  font-weight: 800;
+  color: #5b21b6;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge">🧼 Prompt Cleaner</div>
+  <h1>Prompt Cleaner Tool</h1>
+
+  <div class="info">
+    👩‍🎓 Student: <b>Hamna Munir</b> | 👨‍🏫 Teacher: <b>Sir Nadeem</b>
+  </div>
+</div>
+
+<!-- INPUT -->
+<div class="card">
+  <div class="section-label">Enter Messy Prompt</div>
+  <textarea id="input" rows="4" placeholder="e.g. write something nice about ai and stuff and like explain it"></textarea>
+</div>
+
+<!-- BUTTON -->
+<div class="card">
+  <button class="btn primary" onclick="clean()">Clean Prompt</button>
+  <button class="btn secondary" onclick="clearAll()">Clear</button>
+</div>
+
+<!-- OUTPUT -->
+<div class="card grid">
+  <div>
+    <div class="section-label">Before (Messy Prompt)</div>
+    <div class="output" id="before">Original prompt...</div>
+  </div>
+
+  <div>
+    <div class="section-label">After (Clean Prompt)</div>
+    <div class="output" id="after">Clean prompt...</div>
+  </div>
+</div>
+
+<!-- SCORE -->
+<div class="card">
+  <div class="section-label">Cleanliness Score</div>
+  <div class="score" id="score">0%</div>
+</div>
+
+<script>
+
+function clean() {
+  const input = document.getElementById("input").value;
+
+  if (!input) return alert("Enter a prompt!");
+
+  document.getElementById("before").innerText = input;
+
+  const cleaned = cleanPrompt(input);
+
+  document.getElementById("after").innerText = cleaned;
+
+  const score = calcScore(input, cleaned);
+  document.getElementById("score").innerText = score + "%";
+}
+
+function cleanPrompt(text) {
+
+  let cleaned = text
+    // remove filler words
+    .replace(/\b(something|stuff|things|like|very|really|just|basically|actually|maybe)\b/gi, "")
+    
+    // fix spacing
+    .replace(/\s+/g, " ")
+    
+    // trim
+    .trim();
+
+  // capitalize first letter
+  cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+
+  return `
+CLEAN PROMPT:
+
+ROLE: AI Assistant
+
+TASK: ${cleaned}
+
+INSTRUCTION:
+Provide a clear, structured, and accurate response.
+
+OUTPUT FORMAT:
+Well-organized explanation with key points only.
+`;
+}
+
+function calcScore(original, cleaned) {
+  let reduction = original.length - cleaned.length;
+  let score = 50 + reduction;
+
+  return Math.min(Math.max(score, 0), 100);
+}
+
+function clearAll() {
+  document.getElementById("input").value = "";
+  document.getElementById("before").innerText = "";
+  document.getElementById("after").innerText = "";
+  document.getElementById("score").innerText = "0%";
+}
+
+</script>
+
+</body>
+</html>

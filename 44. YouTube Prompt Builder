@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YouTube Prompt Builder</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #e8e8f8;
+  padding: 40px 20px;
+  color: #2d2d5e;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.badge {
+  display: inline-block;
+  background: #7c3aed;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 34px;
+  color: #5b21b6;
+  font-weight: 800;
+}
+
+.info {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border: 1.5px solid #e0dff5;
+  border-radius: 16px;
+  padding: 22px;
+  max-width: 900px;
+  margin: 0 auto 18px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7c3aed;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* INPUTS */
+input, textarea, select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1.5px solid #ddd8f5;
+  background: #fafafa;
+  font-family: monospace;
+}
+
+/* BUTTONS */
+.btn {
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primary {
+  background: #5b21b6;
+  color: white;
+}
+
+.secondary {
+  background: transparent;
+  border: 1.5px solid #c4b5fd;
+  color: #5b21b6;
+}
+
+/* OUTPUT */
+.output {
+  background: #fff;
+  border: 1.5px solid #e0dff5;
+  border-radius: 16px;
+  padding: 18px;
+  min-height: 280px;
+  white-space: pre-wrap;
+}
+
+.block {
+  background: #f5f3ff;
+  border-left: 4px solid #7c3aed;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.title {
+  background: #ede9fe;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+/* HISTORY */
+.history-item {
+  background: #f5f3ff;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge">🎬 YouTube Builder</div>
+  <h1>YouTube Prompt Generator</h1>
+
+  <div class="info">
+    👩‍🎓 Student: <b>Hamna Munir</b> | 👨‍🏫 Teacher: <b>Sir Nadeem</b>
+  </div>
+</div>
+
+<!-- INPUTS -->
+<div class="card">
+  <div class="section-label">Video Topic</div>
+  <input id="topic" placeholder="e.g. How to study effectively"/>
+</div>
+
+<div class="card">
+  <div class="section-label">Video Type</div>
+  <select id="type">
+    <option>Long Video</option>
+    <option>YouTube Short</option>
+    <option>Tutorial</option>
+  </select>
+</div>
+
+<div class="card">
+  <div class="section-label">Tone</div>
+  <select id="tone">
+    <option>Educational</option>
+    <option>Motivational</option>
+    <option>Fun</option>
+    <option>Viral</option>
+  </select>
+</div>
+
+<!-- BUTTONS -->
+<div class="card">
+  <button class="btn primary" onclick="generate()">Generate YouTube Content</button>
+  <button class="btn secondary" onclick="clearAll()">Clear</button>
+</div>
+
+<!-- OUTPUT -->
+<div class="card">
+  <div class="section-label">Generated Output</div>
+  <div class="output" id="output">
+    Your YouTube content will appear here...
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="card">
+  <div class="section-label">History</div>
+  <div id="history"></div>
+</div>
+
+<script>
+let history = [];
+
+function generate() {
+  const topic = document.getElementById("topic").value;
+  const type = document.getElementById("type").value;
+  const tone = document.getElementById("tone").value;
+
+  if (!topic) return alert("Enter a topic!");
+
+  const result = buildYouTube(topic, type, tone);
+
+  render(result);
+  save(topic, result);
+}
+
+function buildYouTube(topic, type, tone) {
+
+  let script = "";
+
+  if (type === "YouTube Short") {
+    script = `
+🎬 SHORT VIDEO SCRIPT
+
+HOOK:
+"Stop scrolling! You NEED to know this about ${topic}!"
+
+CONTENT:
+Quick explanation of ${topic} in 20–30 seconds
+
+ENDING:
+"Follow for more quick tips 🔥"
+`;
+  }
+
+  if (type === "Long Video") {
+    script = `
+🎬 LONG VIDEO SCRIPT
+
+HOOK:
+"Today we will master ${topic} step by step"
+
+INTRO:
+What is ${topic} and why it matters
+
+MAIN CONTENT:
+- Point 1 explanation
+- Point 2 explanation
+- Real examples
+
+ENDING:
+"Subscribe for more educational content"
+`;
+  }
+
+  if (type === "Tutorial") {
+    script = `
+🎬 TUTORIAL SCRIPT
+
+STEP 1:
+Introduction to ${topic}
+
+STEP 2:
+Demonstration
+
+STEP 3:
+Practical example
+
+FINAL:
+"You can now try ${topic} yourself!"
+`;
+  }
+
+  return `
+YOUTUBE CONTENT
+
+----------------------------------
+TOPIC: ${topic}
+TYPE: ${type}
+TONE: ${tone}
+
+----------------------------------
+TITLE IDEAS
+----------------------------------
+🔥 "Master ${topic} in Easy Steps"
+🔥 "You Will Never Struggle with ${topic} Again"
+🔥 "${topic} Explained Simply"
+
+----------------------------------
+SCRIPT
+----------------------------------
+${script}
+
+----------------------------------
+DESCRIPTION
+----------------------------------
+In this video, we explain ${topic} in a ${tone.toLowerCase()} way. Watch till the end!
+
+----------------------------------
+TAGS
+----------------------------------
+#${topic.replace(/\s/g,'')} #youtube #viral #education #learning
+`;
+}
+
+function render(text) {
+  const lines = text.split("\n");
+  let html = "";
+  let title = "";
+
+  lines.forEach(l => {
+    if (l.includes("YOUTUBE")) title = l;
+    if (l.trim()) html += `<div class="block">${l}</div>`;
+  });
+
+  document.getElementById("output").innerHTML =
+    html + `<div class="title">${title}</div>`;
+}
+
+function save(topic, result) {
+  history.unshift({ topic, result });
+  if (history.length > 10) history.pop();
+
+  const box = document.getElementById("history");
+  box.innerHTML = "";
+
+  history.forEach(h => {
+    const div = document.createElement("div");
+    div.className = "history-item";
+    div.innerText = "🎬 " + h.topic;
+    div.onclick = () => render(h.result);
+    box.appendChild(div);
+  });
+}
+
+function clearAll() {
+  document.getElementById("topic").value = "";
+  document.getElementById("output").innerText = "";
+}
+</script>
+
+</body>
+</html>

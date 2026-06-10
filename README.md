@@ -226,8 +226,7 @@ Each file is fully self-contained — HTML + CSS + JS in one file.
       <strong>Mirza Yasir Abdullah Baig</strong><br/>
        AI/ML Engineer
        <a href="https://github.com/mirzayasirabdullahbaig07">GitHub: @Mirza Yasir Abdullah Baig</a>
-
-   </td>
+     </td>
   </tr>
 </table>
 

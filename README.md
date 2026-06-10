@@ -224,7 +224,7 @@ Each file is fully self-contained — HTML + CSS + JS in one file.
     </td>
     <td align="center">
       <strong>Mirza Yasir Abdullah Baig</strong><br/>
-       AI/ML Engineer
+       AI/ML Engineer . Kagglie Grandmaster . GenAI Content Creator
        <a href="https://github.com/mirzayasirabdullahbaig07">GitHub: @Mirza Yasir Abdullah Baig</a>
      </td>
   </tr>

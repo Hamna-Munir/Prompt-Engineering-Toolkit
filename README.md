@@ -9,7 +9,7 @@
 
 ### A collection of 50 fully functional, browser-based AI prompt engineering tools — built with pure HTML, inline CSS, and JavaScript.
 
-**Developer:** Hamna Munir &nbsp;|&nbsp; **Supervisor:** Sir Nadeem  
+**Developers:** Hamna Munir &nbsp;&amp;&nbsp; Mirza Yasir Abdullah Baig  
 **Domain:** Prompt Engineering &nbsp;|&nbsp; **Stack:** HTML · CSS · JavaScript (No frameworks, no dependencies)
 
 ---
@@ -223,8 +223,8 @@ Each file is fully self-contained — HTML + CSS + JS in one file.
       <a href="https://github.com/Hamna-Munir">GitHub: @Hamna-Munir</a>
     </td>
     <td align="center">
-      <strong>Sir Nadeem</strong><br/>
-      Supervisor & Instructor
+      <strong>Mirza Yasir Abdullah Baig</strong><br/>
+      Software Engineering Student
     </td>
   </tr>
 </table>
@@ -241,6 +241,6 @@ This project is licensed under the **MIT License** — feel free to use, modify,
 
 ⭐ **If you find this toolkit useful, please give it a star!** ⭐
 
-Made with 💜 by **Hamna Munir** and **Mirza Yasir Abdullah Baig** 
+Made with 💜 by **Hamna Munir** and **Mirza Yasir Abdullah Baig**
 
 </div>

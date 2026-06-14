@@ -132,7 +132,7 @@ textarea {
   cursor: pointer;
 }
 
-/* ── FOOTER ── */
+/* FOOTER */
 .footer {
   text-align: center;
   margin-top: 40px;
@@ -202,47 +202,70 @@ textarea {
 <script>
 let history = [];
 
-async function run() {
+function run() {
   const system = document.getElementById("systemPrompt").value;
   const user = document.getElementById("userPrompt").value;
 
   if (!user) return alert("Enter a problem first!");
 
-  document.getElementById("output").innerText = "Generating...";
+  document.getElementById("output").innerText = "Thinking... 🤔";
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 800,
-      system: system || "You are a step-by-step reasoning assistant.",
-      messages: [{
-        role: "user",
-        content:
-`Solve step-by-step.
-
-Return format:
-Step 1: ...
-Step 2: ...
-Step 3: ...
-Final Answer: ...
-
-Problem:
-${user}`
-      }]
-    })
-  });
-
-  const data = await res.json();
-  const text = data.content?.[0]?.text || "Error generating response";
-
-  renderOutput(text);
-  saveHistory(user, text);
+  setTimeout(() => {
+    const text = generateMockReasoning(user);
+    renderOutput(text);
+    saveHistory(user, text);
+  }, 800);
 }
 
+/* ── MOCK AI ENGINE ── */
+function generateMockReasoning(input) {
+
+  const text = input.toLowerCase();
+  let steps = [];
+
+  if (text.includes("train") || text.includes("speed") || text.includes("km")) {
+    steps = [
+      "Step 1: Identify given values from the problem",
+      "Step 2: Use formula Distance = Speed × Time",
+      "Step 3: Multiply speed with time duration",
+      "Step 4: Perform calculation carefully",
+      "Final Answer: Result obtained using distance formula"
+    ];
+  }
+
+  else if (text.includes("ai") || text.includes("education")) {
+    steps = [
+      "Step 1: Understand the concept of AI in education",
+      "Step 2: Identify key applications (learning, grading, personalization)",
+      "Step 3: Analyze benefits for students and teachers",
+      "Step 4: Consider future impact",
+      "Final Answer: AI significantly improves modern education systems"
+    ];
+  }
+
+  else if (text.includes("explain") || text.includes("what")) {
+    steps = [
+      "Step 1: Break down the concept into simple parts",
+      "Step 2: Identify key idea and keywords",
+      "Step 3: Explain using simple language and examples",
+      "Final Answer: Concept explained clearly in simple terms"
+    ];
+  }
+
+  else {
+    steps = [
+      "Step 1: Understand the problem statement",
+      "Step 2: Identify key information",
+      "Step 3: Break into smaller logical parts",
+      "Step 4: Apply step-by-step reasoning",
+      "Final Answer: Solution generated using logical thinking"
+    ];
+  }
+
+  return steps.join("\n");
+}
+
+/* ── OUTPUT ── */
 function renderOutput(text) {
   const lines = text.split("\n");
 
@@ -261,6 +284,7 @@ function renderOutput(text) {
     html + `<div class="final">${final}</div>`;
 }
 
+/* ── HISTORY ── */
 function saveHistory(prompt, response) {
   history.unshift({ prompt, response });
   renderHistory();
@@ -279,6 +303,7 @@ function renderHistory() {
   });
 }
 
+/* ── CLEAR ── */
 function clearAll() {
   document.getElementById("userPrompt").value = "";
   document.getElementById("output").innerText = "";

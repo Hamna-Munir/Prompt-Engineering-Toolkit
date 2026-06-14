@@ -131,6 +131,29 @@ textarea {
   border-radius: 10px;
   cursor: pointer;
 }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  margin-top: 40px;
+  padding: 18px 10px;
+  border-top: 1.5px solid #e0dff5;
+  background: linear-gradient(135deg, #faf5ff, #f3f0ff);
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.footer span {
+  color: #7c3aed;
+  font-weight: 700;
+}
+
+.footer small {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #9ca3af;
+}
 </style>
 </head>
 
@@ -170,6 +193,12 @@ textarea {
   <div id="history"></div>
 </div>
 
+<!-- FOOTER -->
+<div class="footer">
+  Developed by <span>Hamna Munir</span> | Supervised by <span>Sir Nadeem</span>
+  <small>Chain of Thought Builder • AI Reasoning Tool v1.0</small>
+</div>
+
 <script>
 let history = [];
 
@@ -181,7 +210,6 @@ async function run() {
 
   document.getElementById("output").innerText = "Generating...";
 
-  // Ask AI for structured reasoning
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {

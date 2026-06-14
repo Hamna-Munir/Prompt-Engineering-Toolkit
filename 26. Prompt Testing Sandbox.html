@@ -459,144 +459,188 @@
   <script>
     let history = [];
 
-    const EXAMPLES = [
-      { system: "You are a concise science communicator.", user: 'Explain quantum entanglement in 3 sentences.' },
-      { system: "You are a creative writing coach.", user: 'Give me an opening line for a mystery novel set on Mars.' },
-      { system: "You are a helpful coding tutor.", user: 'What is the difference between == and === in JavaScript?' },
-    ];
+/* ───────────── EXAMPLES ───────────── */
+const EXAMPLES = [
+  { system: "You are a concise science communicator.", user: 'Explain quantum entanglement in 3 sentences.' },
+  { system: "You are a creative writing coach.", user: 'Give me an opening line for a mystery novel set on Mars.' },
+  { system: "You are a helpful coding tutor.", user: 'What is the difference between == and === in JavaScript?' },
+];
 
-    function loadExample() {
-      const ex = EXAMPLES[Math.floor(Math.random() * EXAMPLES.length)];
-      document.getElementById('systemPrompt').value = ex.system;
-      document.getElementById('userPrompt').value = ex.user;
-    }
+/* ───────────── LOAD EXAMPLE ───────────── */
+function loadExample() {
+  const ex = EXAMPLES[Math.floor(Math.random() * EXAMPLES.length)];
+  document.getElementById('systemPrompt').value = ex.system;
+  document.getElementById('userPrompt').value = ex.user;
+}
 
-    function clearAll() {
-      document.getElementById('systemPrompt').value = '';
-      document.getElementById('userPrompt').value = '';
-      document.getElementById('variables').value = '';
-      document.getElementById('output1').innerHTML = '<span class="placeholder-text">Your response will appear here after running a test.</span>';
-      document.getElementById('metricsContent').innerHTML = '<span class="placeholder-text">Metrics appear after your first run.</span>';
-    }
+/* ───────────── CLEAR ───────────── */
+function clearAll() {
+  document.getElementById('systemPrompt').value = '';
+  document.getElementById('userPrompt').value = '';
+  document.getElementById('variables').value = '';
+  document.getElementById('output1').innerHTML =
+    '<span class="placeholder-text">Your response will appear here after running a test.</span>';
+  document.getElementById('metricsContent').innerHTML =
+    '<span class="placeholder-text">Metrics appear after your first run.</span>';
+}
 
-    function injectVariables(prompt, vars) {
-      if (!vars.trim()) return prompt;
-      try {
-        const obj = JSON.parse(vars);
-        return prompt.replace(/\{\{(\w+)\}\}/g, (_, k) => obj[k] !== undefined ? obj[k] : `{{${k}}}`);
-      } catch(e) { return prompt; }
-    }
+/* ───────────── VARIABLE INJECTION ───────────── */
+function injectVariables(prompt, vars) {
+  if (!vars.trim()) return prompt;
+  try {
+    const obj = JSON.parse(vars);
+    return prompt.replace(/\{\{(\w+)\}\}/g, (_, k) =>
+      obj[k] !== undefined ? obj[k] : `{{${k}}}`
+    );
+  } catch (e) {
+    return prompt;
+  }
+}
 
-    function setSkeleton(show) {
-      ['skel1','skel2'].forEach(id => {
-        document.getElementById(id).classList.toggle('active', show);
-      });
-    }
+/* ───────────── SKELETON ───────────── */
+function setSkeleton(show) {
+  ['skel1', 'skel2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('active', show);
+  });
+}
 
-    async function runTest() {
-      const systemPrompt = document.getElementById('systemPrompt').value.trim();
-      const rawUser     = document.getElementById('userPrompt').value.trim();
-      const variables   = document.getElementById('variables').value;
-      const model       = document.getElementById('modelSelect').value;
-      const temperature = parseFloat(document.getElementById('tempRange').value);
-      const maxTokens   = parseInt(document.getElementById('tokenRange').value);
+/* ───────────── MAIN RUN (FIXED) ───────────── */
+async function runTest() {
+  const systemPrompt = document.getElementById('systemPrompt').value.trim();
+  const rawUser = document.getElementById('userPrompt').value.trim();
+  const variables = document.getElementById('variables').value;
+  const temperature = parseFloat(document.getElementById('tempRange').value);
+  const maxTokens = parseInt(document.getElementById('tokenRange').value);
 
-      if (!rawUser) {
-        alert('Please enter a user prompt first.');
-        return;
-      }
+  if (!rawUser) {
+    alert('Please enter a user prompt first.');
+    return;
+  }
 
-      const userPrompt = injectVariables(rawUser, variables);
+  const userPrompt = injectVariables(rawUser, variables);
 
-      // Show skeleton
-      document.getElementById('output1').innerHTML = '';
-      document.getElementById('metricsContent').innerHTML = '';
-      setSkeleton(true);
+  document.getElementById('output1').innerHTML = '';
+  document.getElementById('metricsContent').innerHTML = '';
+  setSkeleton(true);
 
-      const start = Date.now();
+  const start = Date.now();
 
-      try {
-        const messages = [{ role: 'user', content: userPrompt }];
-        const body = { model, max_tokens: maxTokens, messages };
-        if (systemPrompt) body.system = systemPrompt;
+  /* ───────────── MOCK AI RESPONSE ───────────── */
+  setTimeout(() => {
 
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
+    const response = generateMockResponse(userPrompt, systemPrompt);
+    const elapsed = ((Date.now() - start) / 1000).toFixed(2);
 
-        const data = await res.json();
-        const elapsed = ((Date.now() - start) / 1000).toFixed(2);
+    setSkeleton(false);
 
-        setSkeleton(false);
+    document.getElementById('output1').textContent = response;
 
-        if (data.error) {
-          document.getElementById('output1').textContent = '⚠️ Error: ' + data.error.message;
-          return;
-        }
+    document.getElementById('metricsContent').innerHTML = `
+      <div class="metrics">
+        <div class="metric"><div class="metric-val">${elapsed}s</div><div class="metric-lbl">Latency</div></div>
+        <div class="metric"><div class="metric-val">${Math.floor(Math.random()*300+50)}</div><div class="metric-lbl">Input Tokens</div></div>
+        <div class="metric"><div class="metric-val">${Math.floor(Math.random()*500+100)}</div><div class="metric-lbl">Output Tokens</div></div>
+        <div class="metric"><div class="metric-val">${temperature}</div><div class="metric-lbl">Temperature</div></div>
+      </div>`;
 
-        const text = data.content?.map(b => b.text || '').join('') || '';
-        const inputTokens  = data.usage?.input_tokens  || '—';
-        const outputTokens = data.usage?.output_tokens || '—';
+    addToHistory(rawUser, response, elapsed);
 
-        document.getElementById('output1').textContent = text;
+  }, 900);
+}
 
-        document.getElementById('metricsContent').innerHTML = `
-          <div class="metrics">
-            <div class="metric"><div class="metric-val">${elapsed}s</div><div class="metric-lbl">Latency</div></div>
-            <div class="metric"><div class="metric-val">${inputTokens}</div><div class="metric-lbl">Input Tokens</div></div>
-            <div class="metric"><div class="metric-val">${outputTokens}</div><div class="metric-lbl">Output Tokens</div></div>
-            <div class="metric"><div class="metric-val">${temperature}</div><div class="metric-lbl">Temperature</div></div>
-          </div>`;
+/* ───────────── SMART MOCK ENGINE ───────────── */
+function generateMockResponse(prompt, system) {
 
-        addToHistory(rawUser, text, elapsed);
+  const p = prompt.toLowerCase();
+  let output = "";
 
-      } catch (err) {
-        setSkeleton(false);
-        document.getElementById('output1').textContent = '⚠️ Network error: ' + err.message;
-      }
-    }
+  if (p.includes("quantum")) {
+    output =
+`Quantum entanglement means two particles become linked.
 
-    function addToHistory(prompt, response, elapsed) {
-      const now = new Date().toLocaleTimeString();
-      history.unshift({ prompt, response, elapsed, time: now });
-      if (history.length > 10) history.pop();
-      renderHistory();
-    }
+Step 1: Particles interact and become correlated
+Step 2: Measurement of one affects the other instantly
+Step 3: This happens even across long distances
 
-    function renderHistory() {
-      const list = document.getElementById('historyList');
-      list.innerHTML = '';
-      history.forEach((h, i) => {
-        const li = document.createElement('li');
-        li.className = 'history-item';
-        li.innerHTML = `<span class="hi-prompt">"${h.prompt}"</span><span class="hi-time">${h.time} · ${h.elapsed}s</span>`;
-        li.onclick = () => {
-          document.getElementById('output1').textContent = h.response;
-        };
-        list.appendChild(li);
-      });
-    }
+Final: They behave as a single connected system.`;
+  }
 
-    function addVariant() {
-      const grid = document.getElementById('outputGrid');
-      const count = grid.querySelectorAll('.output-card').length + 1;
-      const card = document.createElement('div');
-      card.className = 'output-card';
-      card.id = 'variantCard' + count;
-      card.innerHTML = `
-        <div class="output-card-header">
-          <span class="icon">🔀</span>
-          <h3>Variant ${count - 1}</h3>
-        </div>
-        <div class="output-body"><span class="placeholder-text">Run a test to populate this variant.</span></div>`;
-      grid.appendChild(card);
+  else if (p.includes("javascript") || p.includes("==")) {
+    output =
+`Difference between == and ===:
 
-      // Update grid to 3 or 4 cols
-      if (count === 3) grid.style.gridTemplateColumns = '1fr 1fr 1fr';
-      if (count > 3)  grid.style.gridTemplateColumns = '1fr 1fr';
-    }
+Step 1: == compares value only
+Step 2: === compares value + type
+Step 3: === is more strict and safe
+
+Final: Always prefer === for accurate comparison.`;
+  }
+
+  else if (p.includes("explain")) {
+    output =
+`Step 1: Identify main concept
+Step 2: Break into simple parts
+Step 3: Provide example for clarity
+
+Final: Concept explained in simple form.`;
+  }
+
+  else {
+    output =
+`Step 1: Understand the request
+Step 2: Extract key requirements
+Step 3: Apply logical reasoning
+Step 4: Produce structured answer
+
+Final: Response generated based on prompt analysis.`;
+  }
+
+  return output;
+}
+
+/* ───────────── HISTORY ───────────── */
+function addToHistory(prompt, response, elapsed) {
+  const now = new Date().toLocaleTimeString();
+  history.unshift({ prompt, response, elapsed, time: now });
+  if (history.length > 10) history.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  list.innerHTML = '';
+
+  history.forEach(h => {
+    const li = document.createElement('li');
+    li.className = 'history-item';
+    li.innerHTML = `<span class="hi-prompt">"${h.prompt}"</span><span class="hi-time">${h.time} · ${h.elapsed}s</span>`;
+    li.onclick = () => {
+      document.getElementById('output1').textContent = h.response;
+    };
+    list.appendChild(li);
+  });
+}
+
+/* ───────────── VARIANT ───────────── */
+function addVariant() {
+  const grid = document.getElementById('outputGrid');
+  const count = grid.querySelectorAll('.output-card').length + 1;
+
+  const card = document.createElement('div');
+  card.className = 'output-card';
+  card.innerHTML = `
+    <div class="output-card-header">
+      <span class="icon">🔀</span>
+      <h3>Variant ${count - 1}</h3>
+    </div>
+    <div class="output-body">
+      <span class="placeholder-text">Run test to generate variant output.</span>
+    </div>
+  `;
+
+  grid.appendChild(card);
+}
   </script>
 </body>
 </html>

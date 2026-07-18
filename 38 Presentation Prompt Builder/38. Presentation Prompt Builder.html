@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Presentation Prompt Builder</title>
+<style>
+body{font-family:Segoe UI,sans-serif;background:linear-gradient(135deg,#f3f0ff,#ede9fe,#faf5ff);margin:0;color:#2d1b69}
+.container{max-width:1100px;margin:auto;padding:30px}
+.card,.out{background:#fff;border:1px solid #d8ccff;border-radius:16px;padding:20px;margin-top:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #ddd6fe;border-radius:8px;margin-top:6px}
+button{margin-top:15px;padding:12px 18px;background:#6d28d9;color:#fff;border:none;border-radius:8px;cursor:pointer}
+.badge{display:inline-block;background:#6d28d9;color:#fff;padding:6px 14px;border-radius:20px;font-size:12px}
+h1{color:#5b21b6}
+.tag{display:inline-block;background:#ede9fe;padding:6px 10px;border-radius:20px;margin:4px}
+.box{background:#faf5ff;border-left:4px solid #7c3aed;padding:12px;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="badge">AI PRESENTATION ENGINE</div>
+<h1>Presentation Prompt Builder</h1>
+<p>Create detailed AI-ready presentation prompts.</p>
+
+<div class="card">
+<div class="grid">
+<div><label>Topic</label><input id="topic" placeholder="Artificial Intelligence"></div>
+<div><label>Audience</label><input id="audience" placeholder="University Students"></div>
+<div><label>Slides</label><select id="slides"><option>5</option><option>10</option><option>15</option><option>20</option></select></div>
+<div><label>Tone</label><select id="tone"><option>Professional</option><option>Educational</option><option>Technical</option><option>Creative</option></select></div>
+<div><label>Presentation Type</label><input id="type" placeholder="Business Pitch"></div>
+<div><label>Extra Instructions</label><textarea id="extra"></textarea></div>
+</div>
+<button onclick="gen()">Generate Prompt</button>
+</div>
+
+<div class="out" id="out" style="display:none">
+<h2>Presentation Prompt</h2>
+<div id="tags"></div>
+<div class="box" id="prompt"></div>
+</div>
+</div>
+<script>
+function gen(){
+const t=topic.value,a=audience.value,s=slides.value,to=tone.value,ty=type.value,e=extra.value;
+if(!t||!a||!ty){alert("Fill required fields");return;}
+out.style.display='block';
+tags.innerHTML=["Presentation","AI Ready","Slides","Outline","Speaker Notes","Visual Ideas"].map(x=>"<span class='tag'>"+x+"</span>").join("");
+prompt.innerHTML="<b>AI Prompt</b><br><br>Create a "+s+"-slide "+ty+" presentation on <b>"+t+"</b> for <b>"+a+"</b>. Use a <b>"+to+"</b> tone. Include a title slide, agenda, detailed slide content, speaker notes, key takeaways, conclusion, Q&A slide, and visual suggestions. Ensure the content is well-structured, engaging, and easy to understand. Additional instructions: "+(e||"None")+".";
+}
+</script>
+</body>
+</html>
